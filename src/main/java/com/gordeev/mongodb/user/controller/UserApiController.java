@@ -9,6 +9,7 @@ import com.gordeev.mongodb.user.repository.UserRepository;
 import com.gordeev.mongodb.user.routes.UserRoutes;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +19,25 @@ import java.util.List;
 public class UserApiController {
     private final UserRepository userRepository;
 
-    @GetMapping(UserRoutes.GET_ALL)
-    public List<UserResponse> getAll() {
-        return userRepository.findAll().stream().map(UserResponse::of).toList();
+    @GetMapping(UserRoutes.GET)
+    public Page<UserResponse> search(
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size,
+            @RequestParam(defaultValue = "") String query
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        UserDoc probe = UserDoc.builder().lastName(query).firstName(query).build();
+
+        ExampleMatcher exampleMatcher = ExampleMatcher.matchingAny()
+                .withMatcher("lastName", match -> match.contains().ignoreCase())
+                .withMatcher("firstName", match -> match.contains().ignoreCase());
+
+        Example<UserDoc> example = Example.of(probe, exampleMatcher);
+
+        Page<UserDoc> users = userRepository.findAll(example, pageable);
+
+        return users.map(UserResponse::of);
     }
 
     @PostMapping(UserRoutes.CREATE)
