@@ -1,5 +1,6 @@
-package com.gordeev.mongodb.user;
+package com.gordeev.mongodb.user.repository;
 
+import com.gordeev.mongodb.user.entity.UserDoc;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

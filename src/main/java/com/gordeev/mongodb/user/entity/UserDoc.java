@@ -1,14 +1,12 @@
-package com.gordeev.mongodb.user;
+package com.gordeev.mongodb.user.entity;
 
 import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection = "users")
 @Getter
-@Setter
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
 public class UserDoc {
     private ObjectId id;
