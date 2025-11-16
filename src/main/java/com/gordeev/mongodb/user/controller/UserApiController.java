@@ -11,6 +11,7 @@ import com.gordeev.mongodb.user.routes.UserRoutes;
 import lombok.AllArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -70,6 +71,15 @@ public class UserApiController {
 
         userDoc = userRepository.save(userDoc);
         return UserResponse.of(userDoc);
+    }
+
+    @DeleteMapping(UserRoutes.BY_ID)
+    public String delete(@PathVariable String id) {
+        if(!ObjectId.isValid(id)) throw new ObjectParseException();
+
+        userRepository.deleteById(new ObjectId(id));
+
+        return HttpStatus.OK.name();
     }
 
 }
