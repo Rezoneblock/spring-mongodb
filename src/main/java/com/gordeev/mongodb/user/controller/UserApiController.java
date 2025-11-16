@@ -1,6 +1,7 @@
 package com.gordeev.mongodb.user.controller;
 
 import com.gordeev.mongodb.user.dto.request.CreateUserRequest;
+import com.gordeev.mongodb.user.dto.request.EditUserRequest;
 import com.gordeev.mongodb.user.dto.response.UserResponse;
 import com.gordeev.mongodb.user.entity.UserDoc;
 import com.gordeev.mongodb.user.exception.ObjectParseException;
@@ -56,6 +57,18 @@ public class UserApiController {
         if(!ObjectId.isValid(id)) throw new ObjectParseException();
 
         UserDoc userDoc = userRepository.findById(new ObjectId(id)).orElseThrow(UserNotFoundException::new);
+        return UserResponse.of(userDoc);
+    }
+
+    @PutMapping(UserRoutes.BY_ID)
+    public UserResponse edit(@PathVariable String id, @RequestBody EditUserRequest request) {
+        if(!ObjectId.isValid(id)) throw new ObjectParseException();
+        UserDoc userDoc = userRepository.findById(new ObjectId(id)).orElseThrow(UserNotFoundException::new);
+
+        userDoc.setFirstName(request.getFirstName());
+        userDoc.setLastName(request.getLastName());
+
+        userDoc = userRepository.save(userDoc);
         return UserResponse.of(userDoc);
     }
 

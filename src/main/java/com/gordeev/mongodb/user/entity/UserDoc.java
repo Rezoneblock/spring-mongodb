@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "users")
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
 public class UserDoc {
